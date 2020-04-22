@@ -5,31 +5,48 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS -->    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="mystyles.css">
 
+    <style media="screen">
+        @media (min-width: 900px) {
+            
+            #greetings::before {
+                content: "Here's the long intro: ";
+            }
+        }
+        @media (max-width: 899px) {
+            .nav-link {                
+                font-size: smaller;                
+            }          
+        }
+    </style>
     <title>Eli's site</title>
     </head>
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="index.html">Home</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>    
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                    <a class="nav-link" href="personal.html">Personal info</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="work.html">Work experience</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="hobbies.html">Hobbies</a>
-                    </li>            
-                </ul>
+    <body>        
+        <div class="container">            
+            <div class="row">                
+                <div class="col-3">
+                <a class="nav-link" href="index.html">Main page</a>
+                </div>
+                <div class="col-3">
+                <a class="nav-link" href="personal.html">Personal info</a>
+                </div>
+                <div class="col-3">
+                <a class="nav-link" href="work.html">Work experience</a>
+                </div>
+                <div class="col-3">
+                <a class="nav-link" href="hobbies.html">Hobbies</a>
+                </div>
             </div>
-        </nav>
-        <h1>personal page!</h1>
+            <div class="row">
+                <p id="greetings">Hello! My name is Ilia (in russian its pronounced as ee-lee-a), but is is more convenient to say Eli. It's my test site for the cs50 project0.</p>
+                
+                <img src="face.jpg">
+                
+            </div>
+        </div>        
     </body>
 </html>

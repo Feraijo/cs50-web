@@ -1,0 +1,40 @@
+$mycolor: darkgreen;
+
+.nav-link {
+    color: $mycolor;
+    font-size: larger;
+    font-weight: bold;
+}
+
+#greetings {
+    font-family: sans-serif;
+}
+
+div > img {    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+table {                  
+    margin: 15px;  
+    text-align: center; 
+    border: 1px solid black;
+    width: 100%;
+
+}
+
+th, td{        
+    border: 1px solid black;   
+    padding: 10px;            
+}
+
+table th {
+    color: $mycolor;             
+    font-size: larger;
+    font-weight: bold;
+}
+
+
+
