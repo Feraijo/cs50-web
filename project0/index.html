@@ -11,12 +11,15 @@
     <link rel="stylesheet" href="mystyles.css">
     <style media="screen">
         @media (min-width: 900px) {
-            
             #greetings::before {
-                content: "Here's the long intro: ";
+                content: "Here's the long intro: ";                
             }
         }
         @media (max-width: 899px) {
+            #tryme {
+                display: none;
+            }
+
             .nav-link {                
                 font-size: smaller;                
             }          
@@ -40,8 +43,11 @@
                 <a class="nav-link" href="hobbies.html">Hobbies</a>
                 </div>
             </div>
-            <div class="row">
+            <div class="row">                
                 Here you can navigate to any page of this test site.
+            </div>
+            <div class="row">
+                <button id="tryme" onclick="alert('You clicked me!')" type="button" class="btn btn-success">Try me!</button>
             </div>
         </div>        
     </body>

@@ -17,24 +17,24 @@ div > img {
     width: 50%;
 }
 
-table {                  
-    margin: 15px;  
-    text-align: center; 
+%borders {
     border: 1px solid black;
+}    
+
+table {     
+    @extend %borders;
+    margin: 15px;  
+    text-align: center;     
     width: 100%;
 
+    th, td{        
+        @extend %borders;
+        padding: 10px;            
+    }
+
+    th {
+        color: $mycolor;             
+        font-size: larger;
+        font-weight: bold;
+    }
 }
-
-th, td{        
-    border: 1px solid black;   
-    padding: 10px;            
-}
-
-table th {
-    color: $mycolor;             
-    font-size: larger;
-    font-weight: bold;
-}
-
-
-
