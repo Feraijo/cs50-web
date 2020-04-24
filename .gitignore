@@ -1,1 +1,4 @@
-/.vscode
+/.vscode/
+flask_session/
+__pycache__/
+*.py[cod]
