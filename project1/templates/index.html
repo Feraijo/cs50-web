@@ -1,9 +1,70 @@
 {% extends "layout.html" %}
 
 {% block heading %}
-    First Page
+    Bookazilla: reading is fun
 {% endblock %}
 
 {% block body %}
-    <div>You are {% if not logged %}not{%endif%} logged!</div>    
+    {% if logged %}
+    <div class="row"><p>You can start from searching a book:</p></div>    
+    <div class="row">
+        <form action="{{ url_for('search') }}" method="post">   
+            <div class="form-row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="InputISBNnumber">ISBN number </label>
+                        <input type="text" name="isbn" class="form-control" id="InputISBNnumber" placeholder="ex.: 1451648537">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="InputTitle">Title</label>
+                        <input type="text" name="title" class="form-control" id="InputTitle" placeholder="ex.: The Black Unicorn">            
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="InputAuthor">Author</label>
+                        <input type="text" name="author" class="form-control" id="InputAuthor" placeholder="ex.: Charlaine Harris">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="InputYear">Year</label>
+                        <input type="number" name="year" class="form-control" id="InputYear" placeholder="ex.: 2012">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>   
+    
+    {%else%}
+    You must be logged in to perform book search.
+    {%endif%} 
+    </div> 
+    <br>
+    {% if books %}
+    <div class="row">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">ISBN</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Year</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for book in books%}
+                <tr>
+                    <th scope="row">{{book.isbn}}</th>
+                    <td>{{book.title}}</td>
+                    <td>{{book.author}}</td>
+                    <td>{{book.year}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 {% endblock %}

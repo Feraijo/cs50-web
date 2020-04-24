@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, session, render_template, request, flash
 from flask_session import Session
-from db_handler import *
+from db_handler import DBHandler, NoSuchUserError, WrongPasswordError, IntegrityError
 
 app = Flask(__name__)
 
@@ -18,7 +18,7 @@ Session(app)
 # Set up database
 dbh = DBHandler(os.getenv("DATABASE_URL"))
 
-
+# index page
 @app.route("/")
 def index():
     purpose = request.args.get('to')
@@ -26,6 +26,18 @@ def index():
         session["logged"] = False       
     return render_template("index.html", logged=session["logged"])
 
+# process search values
+@app.route("/search", methods=['POST'])
+def search():
+    isbn = request.form.get("isbn") or None
+    title = request.form.get("title") or None
+    author = request.form.get("author") or None    
+    year = request.form.get("year")
+    year = int(year) if year else None    
+    books, response = dbh.find_books(isbn, title, author, year)    
+    return render_template("index.html", logged=session["logged"], books=books, message=response)
+
+# login and registration page
 @app.route("/login_url", methods=['GET', 'POST'])
 def login_form():
     # check if the purpose (registration or user login)
@@ -60,4 +72,3 @@ def login_form():
                 message = 'That username is already in use'
                 return render_template("login_form.html", purpose=purpose, message=message)
             return render_template("login_form.html", purpose='login')
-
