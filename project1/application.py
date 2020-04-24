@@ -2,8 +2,7 @@ import os
 
 from flask import Flask, session, render_template, request, flash
 from flask_session import Session
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from db_handler import *
 
 app = Flask(__name__)
 
@@ -17,23 +16,37 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Set up database
-engine = create_engine(os.getenv("DATABASE_URL"))
-db = scoped_session(sessionmaker(bind=engine))
+dbh = DBHandler(os.getenv("DATABASE_URL"))
 
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    purpose = request.args.get('to')
+    if purpose == 'logout' or session.get("logged") is None:
+        session["logged"] = False       
+    return render_template("index.html", logged=session["logged"])
 
-@app.route("/login")
-def login():
-    return render_template("login.html")
-
-@app.route("/register", methods=['GET', 'POST'])
-def register():
-    if request.method == 'GET':
-        return render_template("register.html")
-    else:
-        name = request.form.get("login")
+@app.route("/login_url", methods=['GET', 'POST'])
+def login_form():
+    purpose = request.args.get('to')
+    if request.method == 'GET':        
+        return render_template("login_form.html", purpose=purpose)
+    else:               
+        login = request.form.get("login")
         pwd = request.form.get("pwd")        
-        return render_template("index.html", name=name, pwd=pwd)
+        if purpose == 'login':
+            try:
+                dbh.check_user(login, pwd)
+                session["logged"] = True
+                message = 'You\'ve successfully logged in.'
+            except NoSuchUserError:
+                message = 'No such user, please register'
+            except WrongPasswordError:
+                message = 'Wrong password, try again'
+                
+            return render_template("index.html", logged=session["logged"], message=message)
+        else:
+            name = request.form.get("name")
+            dbh.add_user(name, login, pwd)
+            return render_template("login_form.html", purpose='login')
+

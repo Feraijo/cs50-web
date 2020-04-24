@@ -5,5 +5,6 @@
 {% endblock %}
 
 {% block body %}
-    {{ name }} and {{ pwd }}
+    <div>You are {% if not logged %}not{%endif%} logged!</div>
+    <div>{{ message }}</div>
 {% endblock %}

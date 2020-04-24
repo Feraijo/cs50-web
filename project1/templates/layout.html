@@ -17,13 +17,15 @@
               
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
+                        {% if not logged %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register') }}">Registration</a>
+                            <a class="nav-link" href="{{ url_for('login_form', to='register') }}">Registration</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">Log in</a>
+                            <a class="nav-link" href="{{ url_for('login_form', to='login') }}">Log in</a>
                         </li>
-                        <li class="nav-item dropdown">
+                        {%endif%}                        
+                        <!-- <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
                                     role="button" data-toggle="dropdown" 
                                     aria-haspopup="true" aria-expanded="false">
@@ -38,12 +40,11 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link disabled" href="#">Disabled</a>
-                        </li>
+                        </li> -->
                     </ul>
-                    <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>
+                    {% if logged %}
+                    <a class="nav-link" href="{{ url_for('index', to='logout') }}">Log out</a>
+                    {%endif%}
                 </div>
             </nav>          
             <div class="row">
