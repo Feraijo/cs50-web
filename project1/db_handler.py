@@ -16,6 +16,12 @@ class DBHandler():
         engine = create_engine(db_url)
         self.db = scoped_session(sessionmaker(bind=engine))
     
+    def execute(self, *args, **kwargs):
+        self.db.execute(*args, **kwargs)
+    
+    def commit(self):
+        self.db.commit()
+
     def add_user(self, name, login, pwd):
             self.db.execute("INSERT INTO users (user_name, login, pass) VALUES (:name, :login, :pwd)",
                     {"name": name, "login": login, "pwd": get_hash(pwd)})        
