@@ -28,12 +28,18 @@ def index():
 
 @app.route("/login_url", methods=['GET', 'POST'])
 def login_form():
+    # check if the purpose (registration or user login)
     purpose = request.args.get('to')
+
+    # redirect to form if GET
     if request.method == 'GET':        
         return render_template("login_form.html", purpose=purpose)
     else:               
+        # get the form values if POST
         login = request.form.get("login")
-        pwd = request.form.get("pwd")        
+        pwd = request.form.get("pwd")    
+
+        # if it is login - check user and password and log him in    
         if purpose == 'login':
             try:
                 dbh.check_user(login, pwd)
@@ -46,7 +52,12 @@ def login_form():
                 
             return render_template("index.html", logged=session["logged"], message=message)
         else:
+            # if it is registration - check if name already exists and register otherwise
             name = request.form.get("name")
-            dbh.add_user(name, login, pwd)
+            try:
+                dbh.add_user(name, login, pwd)
+            except IntegrityError:
+                message = 'That username is already in use'
+                return render_template("login_form.html", purpose=purpose, message=message)
             return render_template("login_form.html", purpose='login')
 

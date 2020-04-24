@@ -51,6 +51,13 @@
                 <h1>{% block heading %}{% endblock %}</h1>
             </div>
             <div class="row">
+                {% if message %}
+                    <div class="alert alert-warning" role="alert">
+                        {{message}}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="row">
                 {% block body %}
                 {% endblock %}
             </div>        
