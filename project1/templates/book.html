@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block heading %}
+    {{book}}
+{% endblock %}
+
+{% block body %}  
+
+{% for review in reviews %}
+    <p>{{review}}</p>
+{% endfor %}
+
+{% endblock %}

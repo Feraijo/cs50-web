@@ -26,6 +26,15 @@ def index():
         session["logged"] = False       
     return render_template("index.html", logged=session["logged"])
 
+# book page
+@app.route("/<int:book_id>")
+def book(book_id):
+    book, message = dbh.get_book(book_id)
+    reviews = dbh.get_book_reviews(book_id)
+    if not book:
+        return render_template("index.html", logged=session["logged"], message=message)
+    return render_template("book.html", book=book, reviews=reviews)
+
 # process search values
 @app.route("/search", methods=['POST'])
 def search():

@@ -1,8 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.exc import IntegrityError
-from password_handler import get_hash
+import hashlib
 
+def get_hash(s):
+    return hashlib.sha256(s.encode()).hexdigest()
 
 class NoSuchUserError(Exception):
     pass
@@ -23,9 +25,9 @@ class DBHandler():
         self.db.commit
 
     def add_user(self, name, login, pwd):
-            self.db.execute("INSERT INTO users (user_name, login, pass) VALUES (:name, :login, :pwd)",
-                    {"name": name, "login": login, "pwd": get_hash(pwd)})        
-            self.db.commit()            
+        self.db.execute("INSERT INTO users (user_name, login, pass) VALUES (:name, :login, :pwd)",
+                {"name": name, "login": login, "pwd": get_hash(pwd)})        
+        self.db.commit()            
     
     def check_user(self, login, pwd):        
         user = self.db.execute("SELECT * FROM users WHERE login = :login", {"login": login}).fetchone()
@@ -35,8 +37,19 @@ class DBHandler():
             raise WrongPasswordError()
         return
 
+    def get_book(self, book_id):
+        book = self.db.execute("SELECT * FROM books WHERE id = :id", {"id": book_id}).fetchone()
+        message = ''
+        if not book:
+            message = "No such book, try another"
+        return book, message
+
+    def get_book_reviews(self, book_id):
+        return self.db.execute("SELECT * FROM reviews WHERE book_id = :book_id", {"book_id": book_id}).fetchall()        
+        
     def find_books(self, isbn, title, author, year):
         locs = dict(locals())
+        message = ''
         lst = []
         args = {}
         for k, v in locs.items():
@@ -52,10 +65,13 @@ class DBHandler():
         if not args:
             return self.db.execute(f"SELECT * FROM books LIMIT 10").fetchall(), \
                     'First 10 books, because no search parameters provided'
-        return self.db.execute(f"SELECT * FROM books WHERE {vs}", args).fetchall(), None
+        res = self.db.execute(f"SELECT * FROM books WHERE {vs}", args).fetchall()
+        if not res:
+            message = '0 books found with these criteria'
+        return res, message
 
 
 if __name__ == "__main__":
     import os
     dbh = DBHandler(os.getenv("DATABASE_URL"))
-    print(dbh.find_books(None, None, None, None))
+    print(dbh.find_books(None, 'night', None, None))

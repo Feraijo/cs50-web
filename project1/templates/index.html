@@ -6,7 +6,9 @@
 
 {% block body %}
     {% if logged %}
-    <div class="row"><p>You can start from searching a book:</p></div>    
+        {% if not books %}
+        <div class="row"><p>You can start from searching a book:</p></div>    
+        {%endif%} 
     <div class="row">
         <form action="{{ url_for('search') }}" method="post">   
             <div class="form-row">
@@ -66,5 +68,7 @@
             </tbody>
         </table>
     </div>
+    {%else%}
+
     {% endif %}
 {% endblock %}
