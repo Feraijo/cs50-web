@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    {% if logged %}
+    {% if user %}
         {% if not books %}
         <div class="row"><p>You can start from searching a book:</p></div>    
         {%endif%} 

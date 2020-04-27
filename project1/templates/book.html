@@ -1,13 +1,27 @@
-{% extends "layout.html" %}
+{% extends "book_templ.html" %}
 
-{% block heading %}
-    {{book}}
-{% endblock %}
+{% block review %}  
+    <h2>User reviews:</h2>
+    <form action="{{ url_for('review', book_id=book.id) }}">    
+        <button type="submit" class="btn btn-info">Write a review</button>            
+    </form>
+    <br>
+    <div class="row">
+        {% for review in reviews %}
+        
+        <dt class="col-3">{{ review.user_name }} wrote on {{ review.date }}:</dt>
+        <dd class="col-9">{{ review.review_text}}</dd>
+        
+        <dt class="col-3">Final score: </dt>
+        <dd class="col-9">            
+            {% for i in range(review.score) %}
+                <img src="{{ url_for('static', filename='star.svg') }}">
+            {% endfor %}
+        </dd>
+        {% endfor %}
+        
+    </div>
+</div>
 
-{% block body %}  
-
-{% for review in reviews %}
-    <p>{{review}}</p>
-{% endfor %}
 
 {% endblock %}
