@@ -17,13 +17,6 @@ def autocommit(func):
 def get_hash(s):
     return hashlib.sha256(s.encode()).hexdigest()
 
-class NoSuchUserError(Exception):
-    pass
-
-class WrongPasswordError(Exception):
-    pass
-
-
 class DBHandler():
 
     def __init__(self, db_url):
@@ -32,10 +25,17 @@ class DBHandler():
 
     @autocommit
     def add_user(self, name, login, pwd):
-        self.db.execute("""
-            INSERT INTO users (user_name, login, pass) 
-            VALUES (:name, :login, :pwd)
-            """, {"name": name, "login": login, "pwd": get_hash(pwd)})
+        try:
+            self.db.execute("""
+                INSERT INTO users (user_name, login, pass) 
+                VALUES (:name, :login, :pwd)
+                """, {"name": name, "login": login, "pwd": get_hash(pwd)})
+            message = 'Registration complete, now you can log in.'
+            good_res = True
+        except IntegrityError:
+            message = 'That login is already in use, try another one.'
+            good_res = False
+        return message, good_res
     
     @autocommit
     def check_user(self, login, pwd):        
@@ -44,11 +44,15 @@ class DBHandler():
             FROM users 
             WHERE login = :login
             """, {"login": login}).fetchone()
+        message = 'You\'ve successfully logged in.'
+        good_res = True
         if user is None:
-            raise NoSuchUserError()
-        if get_hash(pwd) != user[2]:
-            raise WrongPasswordError()               
-        return user
+            message = 'No such user, please register'
+            good_res = False            
+        elif get_hash(pwd) != user[2]:
+            message = 'Wrong password, try again'
+            good_res = False              
+        return user, message, good_res
 
     @autocommit
     def get_book(self, book_id):
@@ -57,6 +61,18 @@ class DBHandler():
             FROM books 
             WHERE id = :id
             """, {"id": book_id}).fetchone()
+        message = ''
+        if not book:
+            message = "No such book, try another"
+        return book, message
+
+    @autocommit
+    def get_book_by_isbn(self, isbn):
+        book = self.db.execute("""
+            SELECT * 
+            FROM books 
+            WHERE isbn = :isbn
+            """, {"isbn": isbn}).fetchone()
         message = ''
         if not book:
             message = "No such book, try another"

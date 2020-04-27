@@ -11,9 +11,10 @@
     <div class="container">
         <div class="row">
             <div class="col-sm">
-                <img width="80%"  src="{{ url_for('static', filename='book.jpg') }}">
+                <img width="100%"  src="{{ url_for('static', filename='book.jpg') }}">                
             </div>
             <div class="col-sm">
+            
                 <h2>Title: {{book.title}}</h2>
                 <h3>Author: 
                     <!-- <form action="{{ url_for('search') }}" method="post">
@@ -24,8 +25,18 @@
                 </h3>
                 <h3>ISBN: {{book.isbn}}</h3>
                 <h3>Year: {{book.year}}</h3>
+                <div class="card border-warning mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Goodreads data</div>
+                    <div class="card-body text-warning">
+                        {% if goodreads %}
+                        <p class="card-text">Number of ratings: {{goodreads.ratings_count}}</p>
+                        <p class="card-text">Average rating: {{goodreads.average_rating}}</p>
+                        {% else %}
+                        <p class="card-text">No goodreads data.</p>
+                        {% endif %}
+                    </div>
+                </div>               
             </div>
-        
         </div>
     <br>
     {% block review %}
