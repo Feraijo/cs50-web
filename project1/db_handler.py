@@ -115,8 +115,8 @@ class DBHandler():
                 lst.append(f'{k} = :{k}')
                 args[k] = v            
             else:
-                lst.append(f'lower({k}) like :{k.lower()}')
-                args[k] = f'%{v}%'            
+                lst.append(f'lower({k}) like :{k}')
+                args[k] = f'%{v.lower()}%'            
         vs = ' AND '.join(lst)
         if not args:
             return self.db.execute("""
@@ -137,4 +137,4 @@ class DBHandler():
 if __name__ == "__main__":
     import os
     dbh = DBHandler(os.getenv("DATABASE_URL"))
-    print(dbh.find_books(None, 'night', None, None))
+    print(dbh.find_books(None, 'unicorn', None, None))
