@@ -1,0 +1,15 @@
+{% extends "orders/base.html" %}
+
+{% block title %}
+    pizzatime
+{% endblock %}
+
+{% block body %}
+    <h1>Menu</h1>
+
+    {% for menuitem in menuitems %}
+        <li>
+            {{ menuitem }}
+        </li>
+    {% endfor %}
+{% endblock %}
