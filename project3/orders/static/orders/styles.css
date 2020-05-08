@@ -1,3 +1,13 @@
 body {
     font-family: sans-serif;
 }
+
+img {
+    width: 99%;
+    max-height: 60%;
+    object-fit: cover;
+}
+
+.img_descr {
+    text-align: center;
+}

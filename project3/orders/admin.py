@@ -19,5 +19,3 @@ admin.site.register(Sub)
 admin.site.register(SubAddition)
 admin.site.register(SubName)
 admin.site.register(Topping)
-
-

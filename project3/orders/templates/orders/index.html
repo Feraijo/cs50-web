@@ -1,4 +1,5 @@
-{% extends "orders/base.html" %}
+{% extends "orders/layout.html" %}
+{% load static %}
 
 {% block title %}
     pizzatime
@@ -6,10 +7,39 @@
 
 {% block body %}
     <h1>Menu</h1>
-
-    {% for menuitem in menuitems %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <img class="img-thumbnail" src="{% static 'orders/r_pizza.png' %}">
+                <div class="img_descr">Regular Pizza</div>
+            </div>
+            <div class="col">
+                <img class="img-thumbnail" src="{% static 'orders/s_pizza.png' %}">
+                <div class="img_descr">Sicilian Pizza</div>
+            </div>
+            <div class="col">
+                <img class="img-thumbnail" src="{% static 'orders/pasta.png' %}">
+                <div class="img_descr">Pasta</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <img class="img-thumbnail" src="{% static 'orders/salad.png' %}">
+                <div class="img_descr">Salads</div>
+            </div>
+            <div class="col">
+                <img class="img-thumbnail" src="{% static 'orders/sub.png' %}">
+                <div class="img_descr">Subs</div>
+            </div>
+            <div class="col">
+                <img class="img-thumbnail" src="{% static 'orders/dinner_plate.png' %}">
+                <div class="img_descr">Dinner plates</div>
+            </div>
+        </div>
+    </div>
+    <!-- {% for menuitem in menuitems %}
         <li>
             {{ menuitem }}
         </li>
-    {% endfor %}
+    {% endfor %} -->
 {% endblock %}
