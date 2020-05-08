@@ -4,7 +4,7 @@ class MenuName(models.Model):
     name = models.CharField(max_length=128, unique=True)
     
     def __str__(self):
-       return self.name
+       return self.name  # f'{self.id}: {self.name}'
 
     class Meta:
         abstract = True
@@ -41,12 +41,6 @@ class Sub(MenuPrice, MenuSize):
     def __str__(self):
        return f'{self.name} ({self.size})'
 
-class Pasta(MenuName, MenuPrice):
-    pass
-    
-class Salad(MenuName, MenuPrice):
-    pass   
-
 class DinnerPlatter(MenuPrice, MenuSize):
     name = models.ForeignKey('DinnerPlatterName', on_delete=models.CASCADE)
     
@@ -55,6 +49,12 @@ class DinnerPlatter(MenuPrice, MenuSize):
 
     def __str__(self):
        return f'{self.name} ({self.size})'
+
+class Pasta(MenuName, MenuPrice):
+    pass
+    
+class Salad(MenuName, MenuPrice):
+    pass   
 
 class PizzaTitle(MenuName):    
     number_of_toppings = models.PositiveSmallIntegerField(null=True, blank=True)
@@ -76,3 +76,4 @@ class SubAddition(MenuName, MenuPrice):
 
 class Topping(MenuName):
     pass
+#DinnerPlatter.objects.values('name_id').annotate(price=ArrayAgg('price'))

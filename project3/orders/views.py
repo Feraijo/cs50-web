@@ -1,10 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import Pizza
+from .models import *
+
+
 
 # Create your views here.
 def index(request):
@@ -46,3 +49,54 @@ def register_view(request):
     user.last_name = last_name
     user.save()
     return render(request, "orders/login.html", {"message": 'Log in now with your login and password'})
+
+CLASS_MAP = {
+        'Salad': [Salad],
+        'Pasta': [Pasta],
+        'Sub': [SubName, Sub],
+        'DinnerPlatter': [DinnerPlatterName, DinnerPlatter],
+        'Pizza': [PizzaType, PizzaTitle, Pizza],
+    }
+CLASS_MAP = {
+        'Salad': Salad,
+        'Pasta': Pasta,
+        'Sub': Sub,
+        'DinnerPlatter': DinnerPlatter,
+        'Pizza': Pizza,
+    }
+
+def menu_view(request, menu_id):
+    # if request.method == 'GET':
+    #     return render(request, "orders/menu.html", {'menu_id':menu_id})
+    # return jsonify({"success": True, 'sdf':'xcv'})
+    #objs = {x.__name__: x.objects.all() for x in CLASS_MAP[menu_id]}
+    #objs = [{'name': CLASS_MAP[menu_id].objects.filter(name_id=q['name']).first().name, 'prices':q['ar']} for q in \
+    #        [x for x in CLASS_MAP[menu_id].objects.values('name').annotate(ar=ArrayAgg('price'))]]
+    objs = CLASS_MAP[menu_id].objects
+    if menu_id in ['Salad','Pasta']:
+        res = objs.values('name').annotate(price=ArrayAgg('price'))
+        
+        res = {objs.filter(name=row['name']).first().name: 
+                row['price'] for row in res}
+        tp = 1
+    elif menu_id in ['Sub','DinnerPlatter']:
+        res = objs.values('name').annotate(price=ArrayAgg('price'), size=ArrayAgg('size'))
+        res = {objs.filter(name_id=row['name']).first().name: 
+                {x[0]:x[1] for x in zip(row['size'], row['price'])} for row in res}
+        tp = 2
+    else:
+        res = objs.values('pizza_title', 'pizza_type').annotate(price=ArrayAgg('price'), 
+                size=ArrayAgg('size')).order_by('pizza_type', 'pizza_title')        
+        res = {(PizzaType.objects.get(pk=row['pizza_type']), objs.filter(pizza_title=row['pizza_title']).first().pizza_title): 
+                {x[0]:x[1] for x in zip(row['size'], row['price'])} for row in res}
+        print(res)
+        tp = 3
+    # res = {}
+    # for row in objs:
+    #     key = CLASS_MAP[menu_id].objects.filter(name_id=row['name']).first().name
+    #     prices = zip(row['size'], row['price'])
+    #     res[key] = prices
+    
+    
+    return render(request, "orders/menu.html", {'objs':res, 'menu_id':menu_id, 'type':tp})     # 
+    

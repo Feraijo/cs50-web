@@ -1,0 +1,55 @@
+{% extends "orders/layout.html" %}
+{% load static %}
+
+{% block title %}
+    {{menu_id}}
+{% endblock %}
+
+
+{% block body %}
+    {% with 'orders/'|add:menu_id|add:'.png' as image_static %}
+        <img id='onepic' class="img-thumbnail" src="{% static image_static %}"/>
+    {% endwith %}
+    
+    <div id='content'>
+        <br>
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr>                    
+                    <th scope="col">Item</th>
+                    {% if type == 1 %}
+                    <th scope="col">Price</th>
+                    {% elif type == 2 %}
+                    <th scope="col">Price (Small)</th>
+                    <th scope="col">Price (Large)</th>
+                    {% elif type == 3 %}
+                    <th scope="col">Type</th>
+                    <th scope="col">Price (Small)</th>
+                    <th scope="col">Price (Large)</th>
+                    {%endif%}
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, item in objs.items %}                
+                    <tr>
+                        {% if type == 3 %}
+                        <td>{{key.1}}</td>
+                        <td>{{key.0}}</td>
+                        <td>{{item.1}}</td>
+                        <td>{{item.2}}</td>
+                        {% elif type == 1 %}
+                        <td>{{key}}</td>
+                        <td>{{item.0}}</td>
+                        {% elif type == 2 %} 
+                        <td>{{key}}</td>                       
+                        <td>{{item.1}}</td>
+                        <td>{{item.2}}</td>
+                        {%endif%}
+                    </tr> 
+                {% endfor %}                               
+            </tbody>
+        </table> 
+           
+    </div>    
+{% endblock %}

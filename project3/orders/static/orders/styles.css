@@ -11,3 +11,13 @@ img {
 .img_descr {
     text-align: center;
 }
+
+#fr {
+    height: 40%;
+}
+
+#onepic {
+    width: 50%;
+    max-height: 30%;
+    
+}

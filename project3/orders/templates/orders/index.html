@@ -9,37 +9,44 @@
     <h1>Menu</h1>
     <div class="container">
         <div class="row">
-            <div class="col">
-                <img class="img-thumbnail" src="{% static 'orders/r_pizza.png' %}">
-                <div class="img_descr">Regular Pizza</div>
+            <div id="fr" class="col">
+                <a href="{% url 'menu' menu_id='Pizza' %}">
+                    <img class="img-thumbnail" src="{% static 'orders/Pizza.png' %}">
+                    <div class="img_descr">Pizza</div>
+                </a>
             </div>
-            <div class="col">
-                <img class="img-thumbnail" src="{% static 'orders/s_pizza.png' %}">
-                <div class="img_descr">Sicilian Pizza</div>
-            </div>
-            <div class="col">
-                <img class="img-thumbnail" src="{% static 'orders/pasta.png' %}">
-                <div class="img_descr">Pasta</div>
-            </div>
+            <!-- <div class="col">
+                <a href="{% url 'menu' menu_id='Pizza_s' %}">
+                    <img class="img-thumbnail" src="{% static 'orders/s_pizza.png' %}">
+                    <div class="img_descr">Sicilian Pizza</div>
+                </a>
+            </div> -->
         </div>
         <div class="row">
             <div class="col">
-                <img class="img-thumbnail" src="{% static 'orders/salad.png' %}">
-                <div class="img_descr">Salads</div>
+                <a href="{% url 'menu' menu_id='Pasta' %}">
+                    <img class="img-thumbnail" src="{% static 'orders/Pasta.png' %}">
+                    <div class="img_descr">Pasta</div>
+                </a>
+            </div> 
+            <div class="col">
+                <a href="{% url 'menu' menu_id='Salad' %}">
+                    <img class="img-thumbnail" src="{% static 'orders/Salad.png' %}">
+                    <div class="img_descr">Salads</div>
+                </a>
             </div>
             <div class="col">
-                <img class="img-thumbnail" src="{% static 'orders/sub.png' %}">
-                <div class="img_descr">Subs</div>
+                <a href="{% url 'menu' menu_id='Sub' %}">
+                    <img class="img-thumbnail" src="{% static 'orders/Sub.png' %}">
+                    <div class="img_descr">Subs</div>
+                </a>
             </div>
             <div class="col">
-                <img class="img-thumbnail" src="{% static 'orders/dinner_plate.png' %}">
-                <div class="img_descr">Dinner plates</div>
+                <a href="{% url 'menu' menu_id='DinnerPlatter' %}">
+                    <img class="img-thumbnail" src="{% static 'orders/DinnerPlatter.png' %}">
+                    <div class="img_descr">Dinner platters</div>
+                </a>
             </div>
         </div>
     </div>
-    <!-- {% for menuitem in menuitems %}
-        <li>
-            {{ menuitem }}
-        </li>
-    {% endfor %} -->
 {% endblock %}
