@@ -19,7 +19,8 @@
                 
                 <div class="col mb-3">
                     <div class="card" style="width: 18rem;">
-                        <div id="{{'card_'|addstr:q.id}}" class="card-body" data-toppings={{q.number_of_toppings}}>
+                        <div id="{{'card_'|addstr:q.id}}" class="card-body" 
+                            data-toppings="{%if q.number_of_toppings %}{{q.number_of_toppings}}{%endif%}">
                             <h4 class="card-title">{{q.name}}</h4>
                             {%if q.pizza_type_id == 1 %}
                             <h6 class="card-subtitle mb-2">{{pz_types.1}}</h6>
@@ -28,23 +29,23 @@
                             {%endif%}
                             <h6 class="card-subtitle mb-2 text-muted">Vary tasty ingredients</h6>
                             <h6 class="card-subtitle mb-2 text-muted">Very tasty description</h6>
-                            <form class="form_order" id="{{'form_'|addstr:q.id}}">
+                            
                                 {%if q.price_small %}
                                 <div class="custom-control custom-radio">
-                                    <input value="{{q.price_small}}" type="radio" id="{{'small_'|addstr:q.id}}" name="customRadio" class="custom-control-input">
+                                    <input value="{{q.price_small}}" type="radio" id="{{'small_'|addstr:q.id}}" name="customRadio" class="custom-control-input radio">
                                     <label class="custom-control-label" for="{{'small_'|addstr:q.id}}">Small: ${{q.price_small}}</label>
                                 </div>
                                 {%endif%}
                                 {%if q.price_large %}
                                 <div class="custom-control custom-radio">
-                                    <input value="{{q.price_large}}" type="radio" id="{{'large_'|addstr:q.id}}" name="customRadio" class="custom-control-input">
+                                    <input value="{{q.price_large}}" type="radio" id="{{'large_'|addstr:q.id}}" name="customRadio" class="custom-control-input radio">
                                     <label class="custom-control-label" for="{{'large_'|addstr:q.id}}">Large: ${{q.price_large}}</label>
                                 </div>
                                 {%endif%}
                                 <p class="card-text"> </p>
                                 
                                 <button hidden id="{{'but_'|addstr:q.id}}" type="button" class="btn btn-warning cart_add" data-toggle="modal" data-target="#mymodal">Proceed to order</button>
-                            </form>
+                           
                             
                         </div>
                     </div>
@@ -56,42 +57,43 @@
     <div id='mymodal' class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p></p>
-                </div>
-                <div class="modal-body2">
-                    {%if menu_id == 'Sub' %}
-                        Choose additions to your sub:
-                    {%elif menu_id == 'Pizza' %}
-                        <p>Choose toppings for your pizza:</p>
-                        <p class='tops'></p>
-                    {%endif%}
-                    {%for k,v in adds.items%}
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="{{'add_'|addstr:k}}">
-                            <label class="custom-control-label" for="{{'add_'|addstr:k}}">
-                                {%if menu_id == 'Sub' %}
-                                    {{v.0}}: ${{v.1}}
-                                {%elif menu_id == 'Pizza' %}
-                                    {{v}}
-                                {%endif%}                                
-                            </label>
-                        </div>
-                    {%endfor%}
-                    
-                    
-                    
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-warning">Save changes</button>
-                </div>
+                <form id="purch_form">
+                    <div class="modal-header">
+                        <h5 class="modal-title">                            
+                        </h5>
+                        <button type="button" class="close closebut" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input hidden type="text" readonly class="form-control-plaintext" id="inp_id" value="">
+                        <p></p>
+                    </div>
+                    <div class="modal-body2">
+                        {%if menu_id == 'Sub' %}
+                            Choose additions to your sub:
+                        {%elif menu_id == 'Pizza' %}
+                            <p>Choose toppings for your pizza:</p>                        
+                        {%endif%}
+                        
+                        {%for k,v in adds.items%}
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input checkbox" id="{{'add_'|addstr:k}}">
+                                <label class="custom-control-label" for="{{'add_'|addstr:k}}">
+                                    {%if menu_id == 'Sub' %}
+                                        {{v.0}}: ${{v.1}}
+                                    {%elif menu_id == 'Pizza' %}
+                                        {{v}}
+                                    {%endif%}                                
+                                </label>
+                            </div>
+                        {%endfor%}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary closebut" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-warning">Save changes</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
