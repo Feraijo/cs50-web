@@ -4,71 +4,42 @@ class MenuName(models.Model):
     name = models.CharField(max_length=128, unique=True)
     
     def __str__(self):
-       return self.name  # f'{self.id}: {self.name}'
+       return self.name
 
     class Meta:
         abstract = True
 
 class MenuPrice(models.Model):
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    price_large = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+    price_small = models.DecimalField(max_digits=6, decimal_places=2, null=True)
 
     class Meta:
         abstract = True
 
-class MenuSize(models.Model):
-    size = models.ForeignKey('Size', on_delete=models.CASCADE, default=1)
-
-    class Meta:
-        abstract = True
-
-
-class Pizza(MenuPrice, MenuSize):
-    pizza_title = models.ForeignKey('PizzaTitle', on_delete=models.CASCADE)    
+class Pizza(MenuPrice):
+    name = models.CharField(max_length=128)
+    number_of_toppings = models.PositiveSmallIntegerField(null=True, blank=True)   
     pizza_type = models.ForeignKey('PizzaType', on_delete=models.CASCADE)    
     
     class Meta:
-        unique_together = (('pizza_title', 'size', 'pizza_type'),)
+        unique_together = (('name', 'pizza_type'),)
 
     def __str__(self):
-       return f'{self.pizza_type} - {self.pizza_title} ({self.size})'
+       return f'{self.pizza_type} - {self.name}'
 
-class Sub(MenuPrice, MenuSize):
-    name = models.ForeignKey('SubName', on_delete=models.CASCADE)    
-    
-    class Meta:
-        unique_together = (('name', 'size'),)
+class Sub(MenuName, MenuPrice):
+    pass
 
-    def __str__(self):
-       return f'{self.name} ({self.size})'
-
-class DinnerPlatter(MenuPrice, MenuSize):
-    name = models.ForeignKey('DinnerPlatterName', on_delete=models.CASCADE)
-    
-    class Meta:
-        unique_together = (('name', 'size'),)
-
-    def __str__(self):
-       return f'{self.name} ({self.size})'
+class DinnerPlatter(MenuName, MenuPrice):
+    pass
 
 class Pasta(MenuName, MenuPrice):
     pass
     
 class Salad(MenuName, MenuPrice):
     pass   
-
-class PizzaTitle(MenuName):    
-    number_of_toppings = models.PositiveSmallIntegerField(null=True, blank=True)
     
 class PizzaType(MenuName):
-    pass
-
-class DinnerPlatterName(MenuName):
-    pass
-
-class SubName(MenuName):  
-    pass
-
-class Size(MenuName):
     pass
 
 class SubAddition(MenuName, MenuPrice):
@@ -76,4 +47,3 @@ class SubAddition(MenuName, MenuPrice):
 
 class Topping(MenuName):
     pass
-#DinnerPlatter.objects.values('name_id').annotate(price=ArrayAgg('price'))

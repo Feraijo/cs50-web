@@ -10,7 +10,6 @@ def get_menu():
     r = requests.get('http://www.pinocchiospizza.net/menu.html')    
     soup = BeautifulSoup(r.content, 'html.parser')
     food = {}
-    food['Sizes'] = []
     for row in soup.select('table.foodmenu tr'):
         section = row.select('a')
         if section:
@@ -18,9 +17,7 @@ def get_menu():
             food[key] = []
         vals = [x.text for x in row.select('td')]
         if vals and vals[0]:
-            food[key].append(vals)
-        elif not food['Sizes'] and vals and not vals[0]:
-            food['Sizes'] = [vals[1], vals[2]]
+            food[key].append(vals)        
 
     sub_add = [sub for sub in food['Subs'] if '+' in sub[1] or '+' in sub[2]]        
     for i, sub in enumerate(sub_add):
@@ -39,12 +36,7 @@ def get_menu():
 def migrate_data():
     data = get_menu()
 
-    s_small = Size(name=data['Sizes'][0])
-    s_small.save()
-    s_large = Size(name=data['Sizes'][1])
-    s_large.save()
-    sizes = [s_small, s_large]
-
+# 'Toppings': ['Pepperoni', 'Sausage', 'Mushrooms', 'Onions', 'Ham', 'Canadian Bacon', 'Pineapple', 'Eggplant', 'Tomato & Basil', 'Green Peppers', 'Hamburger', 'Spinach', 'Artichoke', 'Buffalo Chicken', 'Barbecue Chicken', 'Anchovies', 'Black Olives', 'Fresh Garlic', 'Zucchini']}
     for top in data['Toppings']:
         Topping(name=top).save()
     
@@ -53,40 +45,40 @@ def migrate_data():
         'Salads':Salad,
         'Pasta': Pasta,
     }
+# 'SubAdditions': [['Mushrooms', '0.50', '0.50'], ['Green Peppers', '0.50', '0.50'], ['Onions', '0.50', '0.50'], ['Extra Cheese on any sub', '0.50', '0.50']], 
+# 'Salads': [['Garden Salad', '6.25'], ['Greek Salad', '8.25'], ['Antipasto', '8.25'], ['Salad w/Tuna', '8.25']], 
+# 'Pasta': [['Baked Ziti w/Mozzarella', '6.50'], ['Baked Ziti w/Meatballs', '8.75'], ['Baked Ziti w/Chicken', '9.75']], 
     for name in class_map:
         for item in data[name]:
-            class_map[name](name=item[0], price=float(item[1])).save()
+            class_map[name](name=item[0], price_small=float(item[1])).save()
     
     class_map = {
-        'Subs': (SubName, Sub),
-        'Dinner Platters': (DinnerPlatterName, DinnerPlatter),
+        'Subs': Sub,
+        'Dinner Platters': DinnerPlatter,
     }
+# 'Subs': [['Cheese', '6.50', '7.95'], ['Italian', '6.50', '7.95'], ['Ham + Cheese', '6.50', '7.95'], ['Meatball', '6.50', '7.95'], ['Tuna', '6.50', '7.95'], ['Turkey', '7.50', '8.50'], ['Chicken Parmigiana', '7.50', '8.50'], ['Eggplant Parmigiana', '6.50', '7.95'], ['Steak', '6.50', '7.95'], ['Steak + Cheese', '6.95', '8.50'], ['Sausage, Peppers & Onions', '', '8.50'], ['Hamburger', '4.60', '6.95'], ['Cheeseburger', '5.10', '7.45'], ['Fried Chicken', '6.95', '8.50'], ['Veggie', '6.95', '8.50']], 
+# 'Dinner Platters': [['Garden Salad', '40.00', '65.00'], ['Greek Salad', '50.00', '75.00'], ['Antipasto', '50.00', '75.00'], ['Baked Ziti', '40.00', '65.00'], ['Meatball Parm', '50.00', '75.00'], ['Chicken Parm', '55.00', '85.00']], 
     for name in class_map:
-        for row in data[name]:              
-            item_name = class_map[name][0](name=row[0])
-            item_name.save()
-            for i in [0,1]:
-                try:
-                    class_map[name][1](name=item_name, \
-                        price=float(row[i+1]), size=sizes[i]).save()
-                except:
-                    continue
-        
+        for item in data[name]:
+            price_s = float(item[1]) if item[1] else None
+            price_l = float(item[2]) if item[2] else None
+            class_map[name](name=item[0], price_small=price_s, price_large=price_l).save()
+            
+# 'Regular Pizza': [['Cheese', '12.70', '17.95'], ['1 topping', '13.70', '19.95'], ['2 toppings', '15.20', '21.95'], ['3 toppings', '16.20', '23.95'], ['Special', '17.75', '25.95']], 
+# 'Sicilian Pizza': [['Cheese', '24.45', '38.70'], ['1 item', '26.45', '40.70'], ['2 items', '28.45', '42.70'], ['3 items', '29.45', '44.70'], ['Special', '30.45', '45.70']], 
     for name in ['Regular Pizza', 'Sicilian Pizza']:
         p_type = PizzaType(name=name)
         p_type.save()
-        for row in data[name]:
-            try:
-                p_title = PizzaTitle(name=row[0])
-                r = re.match('\d+', row[0])
-                if r:
-                    p_title.number_of_toppings = int(r.group(0))
-                p_title.save()
-            except IntegrityError as e:
-                p_title = PizzaTitle.objects.get(name=row[0])
-            for i in [0,1]:
-                Pizza(pizza_type=p_type, pizza_title=p_title, 
-                    price=float(row[i+1]), size=sizes[i]).save()
+        for item in data[name]:
+            price_s = float(item[1]) if item[1] else None
+            price_l = float(item[2]) if item[2] else None
+            p = Pizza(name=item[0], price_small=price_s, price_large=price_l)
+            p.pizza_type = p_type
+            r = re.match('\d+', item[0])
+            if r:
+                p.number_of_toppings = int(r.group(0))
+            p.save()
             
 if __name__ == '__main__':
     migrate_data()
+    #print(get_menu())

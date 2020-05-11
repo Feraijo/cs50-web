@@ -1,12 +1,11 @@
 {% extends "orders/layout.html" %}
 {% load static %}
 
-{% block title %}
-    pizzatime
+{% block heading %}
+Menu
 {% endblock %}
 
-{% block body %}
-    <h1>Menu</h1>
+{% block body %}    
     <div class="container">
         <div class="row">
             <div id="fr" class="col">
@@ -14,13 +13,7 @@
                     <img class="img-thumbnail" src="{% static 'orders/Pizza.png' %}">
                     <div class="img_descr">Pizza</div>
                 </a>
-            </div>
-            <!-- <div class="col">
-                <a href="{% url 'menu' menu_id='Pizza_s' %}">
-                    <img class="img-thumbnail" src="{% static 'orders/s_pizza.png' %}">
-                    <div class="img_descr">Sicilian Pizza</div>
-                </a>
-            </div> -->
+            </div>            
         </div>
         <div class="row">
             <div class="col">
