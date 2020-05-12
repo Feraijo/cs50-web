@@ -64,12 +64,21 @@ CLASS_MAP = {
         'Pizza': Pizza,
     }
 
-def get_add(request):
-    type_id = request.POST["type_id"]
-    print(type_id)
-    sa = SubAddition.objects.values_list()
-    sa = {x[0]: (x[1], x[3]) for x in sa}
-    return JsonResponse(sa)
+def cart_view(request):
+    context = { 
+        "user": request.user
+    }
+    if request.method == 'POST':
+        type_id = request.POST["type"]
+        menu_id = request.POST["id"]        
+        size = request.POST["size"]
+        adds = request.POST["adds"]
+         
+        print(type_id)
+        print(menu_id)        
+        print(size)
+        print(adds)
+    return JsonResponse({'key13':'sdfsdf345'})
 
 def menu_view(request, menu_id):
     res = {}    

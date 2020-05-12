@@ -8,5 +8,5 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register_view, name="register"),
     path("menu/<str:menu_id>", views.menu_view, name="menu"),
-    path("menu_adds", views.get_add, name="get_add"),
+    path("cart", views.cart_view, name="cart"),
 ]

@@ -57,7 +57,8 @@
     <div id='mymodal' class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <form id="purch_form">
+                <form id="purch_form" action="{% url 'cart' %}" method="post">
+                    {% csrf_token %}
                     <div class="modal-header">
                         <h5 class="modal-title">                            
                         </h5>
@@ -66,12 +67,12 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <input hidden type="text" readonly class="form-control-plaintext" id="inp_id" value="">
+                        <input hidden type="text" readonly class="form-control-plaintext" id="inp_id" name="inp_id" value="">
                         <p></p>
                     </div>
                     <div class="modal-body2">
                         {%if menu_id == 'Sub' %}
-                            Choose additions to your sub:
+                            Choose additions to your sub ($0.50 each):
                         {%elif menu_id == 'Pizza' %}
                             <p>Choose toppings for your pizza:</p>                        
                         {%endif%}
@@ -81,7 +82,7 @@
                                 <input type="checkbox" class="custom-control-input checkbox" id="{{'add_'|addstr:k}}">
                                 <label class="custom-control-label" for="{{'add_'|addstr:k}}">
                                     {%if menu_id == 'Sub' %}
-                                        {{v.0}}: ${{v.1}}
+                                        {{v.0}}
                                     {%elif menu_id == 'Pizza' %}
                                         {{v}}
                                     {%endif%}                                

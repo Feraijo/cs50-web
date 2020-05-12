@@ -1,21 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // var user_id = document.querySelector('#user_id').dataset.user_id
+    // if (sessionStorage.getItem('cart') === null){
+    //     sessionStorage.setItem('cart', `{${user_id}: []}`);
+    // }
+    
     var adds = []
 
     document.querySelector('#purch_form').onsubmit = function(){
         //var data = new FormData(this)
         inp_id = document.querySelector('#inp_id').value
-        var prod_type = document.querySelector('div.modal-body2').dataset.prod_type.trim()
+        size = capitalize(inp_id.split('_')[0])
+        id = inp_id.split('_')[1]        
+        prod_type = document.querySelector('div.modal-body2').dataset.prod_type.trim()
         tops = document.querySelector('div.modal-body2').dataset.toppings
         if (tops && adds.length < tops){
             alert("Choose your toppings!")
             return false;
-        }
-        data = {
-            'type': prod_type,
-            'id': inp_id, 
-            'adds':adds,
-        }
-        alert(JSON.stringify(data))        
+        }        
+        var form_data = new FormData();
+        
+        form_data.append('type', prod_type)
+        form_data.append('id', id)        
+        form_data.append('size', size)
+        form_data.append('adds', adds)  
+        //alert(JSON.stringify(form_data))               
+        query_server('/cart', form_data)
+        
+        //alert(JSON.stringify(res))
         return false;
     }
 
@@ -24,20 +35,23 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     
     document.querySelectorAll('.custom-control-input.checkbox').forEach(check => {
-        check.onchange = () => {   
+        check.onchange = () => {  
+            check_val = check.parentElement.querySelector('label').innerHTML.trim()
+            id = check.id.split('_')[1]
             if (check.checked){
                 var prod_type = document.querySelector('div.modal-body2').dataset.prod_type
+
                 if (prod_type.trim() === 'Pizza'){
                     var tops = document.querySelector('div.modal-body2').dataset.toppings                    
                     if (isEmpty(tops) || adds.length >= tops){
                             check.checked = false                    
-                    } else {
-                        adds.push(check.id)
+                    } else {                        
+                        adds.push(id)
                     }
                 } else 
-                    adds.push(check.id)
+                    adds.push(id)
             } else {
-                adds.pop(check.id)
+                adds.pop(id)
             }
         }
     })
@@ -66,10 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 x.checked = false
             })
-            prod_type = document.querySelector('h1').innerHTML
+            prod_type = document.querySelector('h1').innerHTML.trim()
             card = this.parentElement
             document.querySelector('.modal-title').innerHTML = capitalize(size)+ ' ' + 
-                card.querySelector('.card-title').innerHTML + ' ' + prod_type
+                card.querySelector('.card-title').innerHTML.trim() + ' ' + prod_type
             document.querySelector('div.modal-body2').dataset.toppings = card.dataset.toppings
             document.querySelector('div.modal-body2').dataset.prod_type = prod_type
         }
@@ -92,24 +106,19 @@ function capitalize(string){
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function query_for_array(){
+function query_server(url, data){
     const request = new XMLHttpRequest();    
-    request.open('POST', '/menu_adds');
-
-    var csrftoken = getCookie('csrftoken');
-
+    request.open('POST', url, true);
     request.onreadystatechange = function() {//Вызывает функцию при смене состояния.
-        if(request.readyState == XMLHttpRequest.DONE && request.status == 200) {
-            // Запрос завершен. Здесь можно обрабатывать результат.            
-            document.querySelector('.modal-body2 p').innerHTML = request.response
-        }
+        if(request.readyState == XMLHttpRequest.DONE){
+            if (request.status == 200) {
+                // Запрос завершен. Здесь можно обрабатывать результат.            
+                alert(JSON.stringify(request.response))
+            } else
+                alert('crap')
+        }  
     }
-    
     request.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-
-    const data = new FormData();
-    data.append('type_id', 'ssdsdfcvx');
-    
     request.send(data);
 }
 
