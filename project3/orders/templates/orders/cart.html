@@ -1,0 +1,51 @@
+{% extends "orders/layout.html" %}
+{% load static %}
+
+{% block heading %}
+Shopping cart
+{% endblock %}
+
+{% block body %}    
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Item</th>
+            <th scope="col">Size</th>
+            <th scope="col">Details</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Total price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for purch in cart %}
+            <tr class="cart_item" >
+                <th scope="row">
+                    <span class="counter">
+                    {{ forloop.counter }}
+                    </span>
+                    <img title="Remove item" id="{{purch.id}}" hidden class="cancel_purchase" style="width: 50%;" src="{% static 'orders/close.svg' %}">
+                </th>
+                <td>{{purch.item}}</td>
+                <td>
+                    {% if purch.notes %}
+                    {{purch.notes}}
+                    {% endif %}
+                </td>
+                <td>
+                    {% for add in  purch.adds.all %}
+                    <div>{{add}}</div>
+                    {% endfor %}
+                </td>
+                <td>
+                    {{purch.amount}}
+                </td>
+                <td class="total_price">${{purch.total_price}}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div >    
+    <button onclick="location.href='/order'" id='confirm_order' type="button" class="btn btn-warning">Confirm order placement</button>
+</div>
+{% endblock %}

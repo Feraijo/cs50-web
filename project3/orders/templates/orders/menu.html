@@ -2,6 +2,7 @@
 {% load static %}
 {% load orders_extras %} 
 
+
 {% block heading %}
     {{menu_id}}
 {% endblock %}
@@ -22,39 +23,43 @@
                         <div id="{{'card_'|addstr:q.id}}" class="card-body" 
                             data-toppings="{%if q.number_of_toppings %}{{q.number_of_toppings}}{%endif%}">
                             <h4 class="card-title">{{q.name}}</h4>
-                            {%if q.pizza_type_id == 1 %}
-                            <h6 class="card-subtitle mb-2">{{pz_types.1}}</h6>
-                            {%elif q.pizza_type_id == 2 %}
-                            <h6 class="card-subtitle mb-2">{{pz_types.2}}</h6>
+                            {%if menu_id == 'Pizza' %}
+                            <h6 class="card-subtitle mb-2">{{q.item_type}}</h6>
                             {%endif%}
                             <h6 class="card-subtitle mb-2 text-muted">Vary tasty ingredients</h6>
                             <h6 class="card-subtitle mb-2 text-muted">Very tasty description</h6>
-                            
-                                {%if q.price_small %}
+                            {% if q.price_small and q.price_large %}
                                 <div class="custom-control custom-radio">
                                     <input value="{{q.price_small}}" type="radio" id="{{'small_'|addstr:q.id}}" name="customRadio" class="custom-control-input radio">
                                     <label class="custom-control-label" for="{{'small_'|addstr:q.id}}">Small: ${{q.price_small}}</label>
-                                </div>
-                                {%endif%}
-                                {%if q.price_large %}
+                                </div>                                
                                 <div class="custom-control custom-radio">
                                     <input value="{{q.price_large}}" type="radio" id="{{'large_'|addstr:q.id}}" name="customRadio" class="custom-control-input radio">
                                     <label class="custom-control-label" for="{{'large_'|addstr:q.id}}">Large: ${{q.price_large}}</label>
                                 </div>
-                                {%endif%}
-                                <p class="card-text"> </p>
-                                
-                                <button hidden id="{{'but_'|addstr:q.id}}" type="button" class="btn btn-warning cart_add" data-toggle="modal" data-target="#mymodal">Proceed to order</button>
-                           
+                            {%elif q.price_small and not q.price_large %}    
+                                <div class="custom-control custom-radio">
+                                    <input checked value="{{q.price_small}}" type="radio" id="{{'small_'|addstr:q.id}}" name="customRadio" class="custom-control-input radio">
+                                    <label class="custom-control-label active" for="{{'small_'|addstr:q.id}}">Price: ${{q.price_small}}</label>
+                                </div>
+                            {%elif not q.price_small and q.price_large %} 
+                                <div class="custom-control custom-radio">
+                                    <input value="{{q.price_large}}" type="radio" id="{{'large_'|addstr:q.id}}" name="customRadio" class="custom-control-input radio">
+                                    <label class="custom-control-label active" for="{{'large_'|addstr:q.id}}">Price: ${{q.price_large}}</label>
+                                </div>    
+                            {%endif%}    
+                            <p class="card-text"> </p>
+                            <button hidden id="{{'but_'|addstr:q.id}}" type="button" class="btn btn-warning cart_add" >Proceed to order</button>
                             
                         </div>
                     </div>
                 </div>
                 
             {%endfor%}
+            
         </div>
     </div>    
-    <div id='mymodal' class="modal" tabindex="-1" role="dialog">
+    <div id='mymodal' class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <form id="purch_form" action="{% url 'cart' %}" method="post">
@@ -71,28 +76,33 @@
                         <p></p>
                     </div>
                     <div class="modal-body2">
-                        {%if menu_id == 'Sub' %}
+                        {%if menu_id == 'Subs' %}
                             Choose additions to your sub ($0.50 each):
                         {%elif menu_id == 'Pizza' %}
                             <p>Choose toppings for your pizza:</p>                        
                         {%endif%}
                         
-                        {%for k,v in adds.items%}
+                        {%for add in adds%}
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input checkbox" id="{{'add_'|addstr:k}}">
-                                <label class="custom-control-label" for="{{'add_'|addstr:k}}">
-                                    {%if menu_id == 'Sub' %}
-                                        {{v.0}}
+                                <input type="checkbox" class="custom-control-input checkbox" id="{{'add_'|addstr:add.id}}">
+                                <label class="custom-control-label" for="{{'add_'|addstr:add.id}}">
+                                    {%if menu_id == 'Subs' %}
+                                        {{add.name}}
                                     {%elif menu_id == 'Pizza' %}
-                                        {{v}}
+                                        {{add.name}}
                                     {%endif%}                                
                                 </label>
                             </div>
                         {%endfor%}
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary closebut" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-warning">Save changes</button>
+                        <button type="button" class="btn btn-secondary closebut" data-dismiss="modal">Cancel</button>
+                        <div>
+                            <button id='amount_minus' type="button" class="btn btn-warning">-</button>
+                            <input id='amount' type="text" value="1">
+                            <button id='amount_plus' type="button" class="btn btn-warning">+</button>
+                        </div>                        
+                        <button id="form_submit" type="button" class="btn btn-warning" data-dismiss="modal">Add to cart</button>
                     </div>
                 </form>
             </div>

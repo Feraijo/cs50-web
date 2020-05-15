@@ -7,15 +7,9 @@ from django.urls import reverse
 
 from .models import *
 
-
-
-# Create your views here.
 def index(request):
     if not request.user.is_authenticated:
         return render(request, "orders/login.html", {"message": None})
-    # context = {
-    #     "user": request.user
-    # }
     context = {        
         "user": request.user
     }
@@ -49,81 +43,73 @@ def register_view(request):
     user.save()
     return render(request, "orders/login.html", {"message": 'Log in now with your login and password'})
 
-# CLASS_MAP = {
-#         'Salad': [Salad],
-#         'Pasta': [Pasta],
-#         'Sub': [SubName, Sub],
-#         'DinnerPlatter': [DinnerPlatterName, DinnerPlatter],
-#         'Pizza': [PizzaType, PizzaTitle, Pizza],
-#     }
-CLASS_MAP = {
-        'Salad': Salad,
-        'Pasta': Pasta,
-        'Sub': Sub,
-        'DinnerPlatter': DinnerPlatter,
-        'Pizza': Pizza,
+def place_order(request):
+    order = Order(user=request.user)
+    order.save()
+    for purch in request.user.purchases.pp():
+        purch.pending = False
+        purch.save()
+        order.purchases.add(purch)
+    context = {        
+        "user": request.user
     }
+    return render(request, "orders/index.html", context)
 
 def cart_view(request):
     context = { 
         "user": request.user
     }
-    if request.method == 'POST':
-        type_id = request.POST["type"]
-        menu_id = request.POST["id"]        
-        size = request.POST["size"]
-        adds = request.POST["adds"]
-         
-        print(type_id)
-        print(menu_id)        
-        print(size)
-        print(adds)
-    return JsonResponse({'key13':'sdfsdf345'})
+    if request.method == 'POST':        
+        remove = request.POST["remove"]
+        if remove == 'true':
+            p = Purchase.objects.get(id=request.POST["id"])
+            p.delete()
+            return JsonResponse({'qwe':'purchase removed'})
+        else:
+            type_id = request.POST["type"]                
+            size = request.POST["size"]
+            adds = request.POST["adds"]
+            amount = int(request.POST["amount"])
+            mi = MenuItem.objects.get(id=request.POST["id"])
+            p = Purchase(user=request.user, item=mi)
+            p.save()
+            if adds:
+                for a in Addition.objects.filter(id__in=[int(x) for x in adds.split(',')]):
+                    p.adds.add(a)
+            if mi.price_small and mi.price_large:
+                p.notes = size
+            if size == 'Small':
+                price = mi.price_small
+            else:
+                price = mi.price_large
+            if type_id == 'Subs':
+                for add in p.adds.all():
+                    if add.price:
+                        price += add.price
+                    else:
+                        price += 0.5
+            p.amount = amount
+            p.total_price = price * amount
+            p.save()
+            return JsonResponse({'message':'purchase added'})
+    else:
+        purchs = request.user.purchases.pp().order_by('id')
+        context.update({'cart': purchs})
+        return render(request, "orders/cart.html", context)
 
 def menu_view(request, menu_id):
-    res = {}    
-    objs = CLASS_MAP[menu_id].objects.values().order_by('name')  
+    res = {}
     if menu_id == 'Pizza':
-        res.update({'pz_types':dict(PizzaType.objects.values_list())})
-        res.update({'adds':dict(Topping.objects.values_list())})
-    if menu_id == 'Sub':
-        sa = SubAddition.objects.values_list()
-        sa = {x[0]: (x[1], x[3]) for x in sa}        
-        res.update({'adds':sa})
-    #print(res)
+        types = ItemType.objects.filter(name__endswith=menu_id)
+        add_type = AddType.objects.get(name='Toppings')
+        res.update({'adds': Addition.objects.filter(add_type=add_type)})
+    elif menu_id == 'Subs':
+        types = ItemType.objects.filter(name=menu_id)
+        add_type = AddType.objects.get(name='SubAdditions')
+        res.update({'adds': Addition.objects.filter(add_type=add_type)})
+    else:
+        types = ItemType.objects.filter(name=menu_id)
+    objs = MenuItem.objects.filter(item_type__in=types).order_by('item_type' ,'name')
+    
     res.update({'objs':objs, 'menu_id':menu_id})
     return render(request, "orders/menu.html", res)
-#     # if request.method == 'GET':
-#     #     return render(request, "orders/menu.html", {'menu_id':menu_id})
-#     # return jsonify({"success": True, 'sdf':'xcv'})
-#     #objs = {x.__name__: x.objects.all() for x in CLASS_MAP[menu_id]}
-#     #objs = [{'name': CLASS_MAP[menu_id].objects.filter(name_id=q['name']).first().name, 'prices':q['ar']} for q in \
-#     #        [x for x in CLASS_MAP[menu_id].objects.values('name').annotate(ar=ArrayAgg('price'))]]
-#     objs = CLASS_MAP[menu_id].objects
-#     if menu_id in ['Salad','Pasta']:
-#         res = objs.values('name').annotate(price=ArrayAgg('price'))
-        
-#         res = {objs.filter(name=row['name']).first().name: 
-#                 row['price'] for row in res}
-#         tp = 1
-#     elif menu_id in ['Sub','DinnerPlatter']:
-#         res = objs.values('name').annotate(price=ArrayAgg('price'), size=ArrayAgg('size'))
-#         res = {objs.filter(name_id=row['name']).first().name: 
-#                 {x[0]:x[1] for x in zip(row['size'], row['price'])} for row in res}
-#         tp = 2
-#     else:
-#         res = objs.values('pizza_title', 'pizza_type').annotate(price=ArrayAgg('price'), 
-#                 size=ArrayAgg('size')).order_by('pizza_type', 'pizza_title')        
-#         res = {(PizzaType.objects.get(pk=row['pizza_type']), objs.filter(pizza_title=row['pizza_title']).first().pizza_title): 
-#                 {x[0]:x[1] for x in zip(row['size'], row['price'])} for row in res}
-#         print(res)
-#         tp = 3
-#     # res = {}
-#     # for row in objs:
-#     #     key = CLASS_MAP[menu_id].objects.filter(name_id=row['name']).first().name
-#     #     prices = zip(row['size'], row['price'])
-#     #     res[key] = prices
-    
-    
-#     return render(request, "orders/menu.html", {'objs':res, 'menu_id':menu_id, 'type':tp})     # 
-    

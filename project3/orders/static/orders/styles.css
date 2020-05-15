@@ -1,3 +1,58 @@
+@keyframes hide {
+    0% {
+        opacity: 1;
+        height: 100%;
+        line-height: 100%;
+        padding: 20px;
+        margin-bottom: 10px;
+    }
+    75% {
+        opacity: 0;
+        height: 100%;
+        line-height: 100%;
+        padding: 20px;
+        margin-bottom: 10px;
+    }
+    100% {
+        opacity: 0;
+        height: 0px;    
+        line-height: 0px;
+        padding: 0px;
+        margin-bottom: 0px;
+    }
+}
+
+span {cursor:pointer; }
+
+#confirm_order {
+    float: right;
+    
+}
+
+.toast {
+    position: absolute; 
+    top: 10px; 
+    right: 50%;
+}
+
+#amount{    
+    width: 40px;
+    height: 35px;
+    text-align: center;    
+    border:1px solid #ddd;
+    border-radius:4px;
+    display: inline-block;
+    vertical-align: middle;
+
+}
+
+.cart_item {
+    animation-name: hide;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+}
+
 body {
     font-family: sans-serif;
 }

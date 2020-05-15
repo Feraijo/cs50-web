@@ -1,37 +1,52 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class MenuName(models.Model):    
+class MenuType(models.Model):
     name = models.CharField(max_length=128, unique=True)
-    
+
+    class Meta:
+        abstract = True
+
     def __str__(self):
-       return self.name
+        return self.name
 
-    class Meta:
-        abstract = True
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
+    purchases = models.ManyToManyField('Purchase')
+    def __str__(self):
+       return f'{self.user}: {self.purchases.count()} items'
 
-class MenuPrice(models.Model):
-    price_large = models.DecimalField(max_digits=6, decimal_places=2, null=True)
-    price_small = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+class PendingPurchasesManager(models.Manager):
+    use_for_related_fields = True
+    def pp(self):
+        qs = super().get_queryset()
+        qs = qs.filter(pending=True)
+        return qs
 
-    class Meta:
-        abstract = True
-    
-class CartItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)   
+class Purchase(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="purchases")   
     item = models.ForeignKey('MenuItem', on_delete=models.CASCADE)
-    #tops = models.ManyToManyField('Topping', blank=True)
-    #adds = models.ManyToManyField('SubAddition', blank=True)
-    adds = models.ManyToManyField('Addition', blank=True)
+    adds = models.ManyToManyField('Addition', blank=True, related_name="purchases")
+    pending = models.BooleanField(default=True)
+    total_price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    notes = models.CharField(max_length=256, null=True, blank=True)
+    amount = models.PositiveSmallIntegerField(null=True, blank=True, default=1)    
+
+    objects = PendingPurchasesManager()
+    #pending_objects = PendingPurchasesManager()
+
+    class Meta:
+        base_manager_name = 'objects'
 
     def __str__(self):
-       return f'{self.user}: {self.item}'
+       return f'{self.item} ({self.amount})'
 
-
-class MenuItem(MenuPrice):
+class MenuItem(models.Model):
     item_type = models.ForeignKey('ItemType', on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
-    number_of_toppings = models.PositiveSmallIntegerField(null=True, blank=True)  
+    number_of_toppings = models.PositiveSmallIntegerField(null=True, blank=True)
+    price_large = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+    price_small = models.DecimalField(max_digits=6, decimal_places=2, null=True)
     
     class Meta:
         unique_together = (('name', 'item_type'),)
@@ -50,40 +65,9 @@ class Addition(models.Model):
     def __str__(self):
         return f'{self.add_type} - {self.name}'
 
-class AddType(MenuName):
+class AddType(MenuType):
+    parent_type = models.ManyToManyField('ItemType', related_name="add_types")
+
+class ItemType(MenuType):
     pass
 
-class ItemType(MenuName):
-    pass
-
-class Pizza(MenuPrice):
-    name = models.CharField(max_length=128)
-    number_of_toppings = models.PositiveSmallIntegerField(null=True, blank=True)   
-    pizza_type = models.ForeignKey('PizzaType', on_delete=models.CASCADE)    
-    
-    class Meta:
-        unique_together = (('name', 'pizza_type'),)
-
-    def __str__(self):
-       return f'{self.pizza_type} - {self.name}'
-
-class Sub(MenuName, MenuPrice):
-    pass
-
-class DinnerPlatter(MenuName, MenuPrice):
-    pass
-
-class Pasta(MenuName, MenuPrice):
-    pass
-    
-class Salad(MenuName, MenuPrice):
-    pass   
-    
-class PizzaType(MenuName):
-    pass
-
-class SubAddition(MenuName, MenuPrice):
-    pass
-
-class Topping(MenuName):
-    pass

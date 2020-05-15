@@ -10,40 +10,54 @@
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="{% static 'orders/styles.css' %}"/>
+        
     </head>
     <body>
         <div class="container">  
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <a class="navbar-brand" href="{% url 'index' %}">Pizza Time!</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" 
-                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                
               
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">                        
                     </ul>
                     {% if user.username != '' %}
+                    <div style="margin-right: 50px;">
+                        <form method="get" action="/cart">
+                            <button id='cart_button' type="submit" class="btn btn-warning" >
+                                Shopping cart
+                                <span id="cart_size" class="badge badge-light">{{user.purchases.pp.count}}</span>
+                            </button>
+                        </form>
+                        <!-- <a class="nav-link" href="{% url 'logout' %}">Shopping cart</a> -->
+                    </div>
                     <div id="user_id" data-user_id="{{user.id}}">Hello, {{user.username}}</div>
                     <a class="nav-link" href="{% url 'logout' %}">Log out</a>
-                    {%endif%}
+                    {%endif%}                    
                 </div>
-            </nav>          
+            </nav>   
+                   
             <div class="row">
                 <h1>{% block heading %}{% endblock %}</h1>
             </div>
-            {% if message %}
-                <div class="row">
-                    <div class="alert alert-warning" role="alert">
-                        {{message}}
-                    </div>
-                </div>
-            {% endif %}            
+            
+            
             {% block body %}
             
             {% endblock %}
-                  
+            <div class="toast" data-delay="2000">
+                <div class="toast-header">
+                    
+                    <strong class="mr-auto">Pizza time!</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    Some text inside the toast body
+                </div>
+            </div>      
         </div>        
     </body>
 </html>
+
