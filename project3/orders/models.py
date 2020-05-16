@@ -13,6 +13,8 @@ class MenuType(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     purchases = models.ManyToManyField('Purchase')
+    finished = models.BooleanField(default=False)
+
     def __str__(self):
        return f'{self.user}: {self.purchases.count()} items'
 

@@ -43,6 +43,7 @@ def register_view(request):
     user.save()
     return render(request, "orders/login.html", {"message": 'Log in now with your login and password'})
 
+
 def place_order(request):
     order = Order(user=request.user)
     order.save()
@@ -64,7 +65,7 @@ def cart_view(request):
         if remove == 'true':
             p = Purchase.objects.get(id=request.POST["id"])
             p.delete()
-            return JsonResponse({'qwe':'purchase removed'})
+            return JsonResponse({'message':'purchase removed'})
         else:
             type_id = request.POST["type"]                
             size = request.POST["size"]

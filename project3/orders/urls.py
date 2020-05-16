@@ -9,5 +9,5 @@ urlpatterns = [
     path("register", views.register_view, name="register"),
     path("menu/<str:menu_id>", views.menu_view, name="menu"),
     path("cart", views.cart_view, name="cart"),
-    path("order", views.place_order, name="order"),
+    path("order", views.place_order, name="order"),    
 ]
