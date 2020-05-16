@@ -31,10 +31,10 @@ ALLOWED_HOSTS = []
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'feraijo@gmail.com'
-EMAIL_HOST_PASSWORD = 'jlxkjdcsvgjnptau'
-DEFAULT_FROM_EMAIL = 'Fera'
-DEFAULT_TO_EMAIL = 'feraijo@gmail.com'
+EMAIL_HOST_USER = 'mail@mail.mail'
+EMAIL_HOST_PASSWORD = 'mail.password' # app_password from gmail
+DEFAULT_FROM_EMAIL = 'nickname'
+DEFAULT_TO_EMAIL = 'mail@mail.mail'
 
 
 # Application definition
