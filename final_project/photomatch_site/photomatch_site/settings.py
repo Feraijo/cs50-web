@@ -27,10 +27,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+MEDIA_ROOT = r'C:\\Users\\Feraijo\\Documents\\!Programming\\cs50 web\\final_project\\photomatch_site\\photomatch_site\\media'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'photographer.apps.PhotographerConfig',
     'matcher.apps.MatcherConfig',
     'photostock.apps.PhotostockConfig',
     'django.contrib.admin',
