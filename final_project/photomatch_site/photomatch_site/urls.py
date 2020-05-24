@@ -17,8 +17,6 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path("", include("photostock.urls")),
-    path("api/", include("photographer.urls")),
-    path("api/", include("matcher.urls")),    
+    path("", include("photostock.urls")),   
     path('admin/', admin.site.urls),
 ]

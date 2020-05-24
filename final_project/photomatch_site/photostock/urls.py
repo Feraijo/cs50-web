@@ -1,9 +1,12 @@
-from django.urls import path
-
+from django.urls import include, path
+from rest_framework import routers
 from . import views
+
+router = routers.DefaultRouter()
+router.register(r'human', views.HumanViewSet)
 
 urlpatterns = [
     path("", views.index, name="index"),
-    # path("menu/<str:menu_id>", views.menu_view, name="menu"),
-    # path("cart", views.cart_view, name="cart"),
+    path('api/', include(router.urls)), 
+    path('api/req/', include('rest_framework.urls', namespace='rest_framework')),
 ]
