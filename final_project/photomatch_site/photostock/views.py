@@ -1,3 +1,4 @@
+from .forms import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -15,6 +16,14 @@ def index(request):
         "user": request.user
     }
     return render(request, "photostock/index.html", context)
+
+def profile_view(request):
+    user_form = UserForm(instance=request.user)
+    profile_form = ProfileForm(instance=request.user.profile)
+    return render(request, 'photostock/profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form
+    })
 
 def login_view(request):
     if request.method == 'GET':
