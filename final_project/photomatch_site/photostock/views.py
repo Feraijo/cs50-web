@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -8,15 +9,16 @@ from rest_framework import viewsets
 #from .serializers import HumanSerializer
 from .models import *
 
-def index(request):
-    if not request.user.is_authenticated:
-        return render(request, "photostock/login.html", {"message": None})
+@login_required(redirect_field_name='')
+def index(request):    
     context = {        
         "user": request.user
     }
     return render(request, "photostock/index.html", context)
 
 def login_view(request):
+    if request.method == 'GET':
+        return render(request, "photostock/login.html", {"message": "Invalid credentials."})
     username = request.POST["username"]
     password = request.POST["password"]
     user = authenticate(request, username=username, password=password)
@@ -25,6 +27,7 @@ def login_view(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "photostock/login.html", {"message": "Invalid credentials."})
+
 
 def logout_view(request):
     logout(request)
