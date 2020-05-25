@@ -8,35 +8,57 @@
         <meta name="author" content="">
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">        
-        <link href="data:image/x-icon;base64,AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAACxSagAAAAAALJJqAC1UK0AkDqBAPn5+QCiQZYAizZ8AK5IowCMNnwAsn6oALRLqwCVRIYAkkuDAJ1SkAC5YLIAtlmtAJM8hACDMXIAmj+MAKxGoQC2Ta4AsE2mALFNpgCWTYYAtVCuAIczdQCtS6QAkj2CAI05fQCqSp8AiTh4AKxGogCmRpoAvWK2AK1JogC3UK8AqEWdAIYzdgCHM3YAkjqDAI82fgC1S60AgjJxALVdrACkVpcAjTl+ALxgtACmQ5sAjjx+AIQ0dACcP44A/v7+AJ1QkACIM3cAqEieAI06fACzT6sAkj2EALRPqwCobJwArkumAIMycgCjXZUAizV6AKFDlACzSqkAkTiCALZRrgCVP4cAmDuKALNNqQCGN3UAhzd1AKpFnwCqV54AkzqFAJQ6hQCwSKcAsFqmALRPrAC1T6wAgzJzAJs9jQCUPYUAhDJzAKFDlQCQPIAAt1GvAKhGnQC5X7EAo1SXAK9JpQCYPosAhzd2AI83fgCIN3YAtkytAIk2eQCLOXkAsU6oALdRsAC4UbAAqUaeAJM7hACwSaYAiDd3AJo+jAC2TK4AlEyGAJlBjACJNnoAvWG1AIYydQCLOXoA////ALJOqQC1SqwAuFGxAI04fQCfP5IAo0aXAI07fQD9/f0AokGVAJ1AkACjZJYAs06qAJhOigD7+/sAnEOQAKRDmACDMXEAm0qNAI07fgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBbYA1W0tPLFpwIi8PAQEBK1JxQENGeDAgAipsYUIBATI+hBopTVN8JRQAdRVhAQFvJhKCczR7e3MfCE4LFQEBBAcngnM/DIWCNB9KaQsBAV0oCYJzGFU2X3MfBmdcAQFBM0yCcwp+PII0a2t8WQEBN4N9gnOBBQVzH3doE1YBAT0jIYJzDh1ignMxLlRuAQF/RxuCcy0Reg1zHx+GOgEBGSQ5gnNzNDRzHx9JHzgBAVB2ZRAQEBAQEBxjXklqAQFkJHZmURceeYJFV3JgSAEBAXQDWEQ7Fh55gkVXcgEBAQEBAQEBAQEBAQEBAQEBAf//AADAAwAAgAEAAIABAACAAQAAgAEAAIABAACAAQAAgAEAAIABAACAAQAAgAEAAIABAACAAQAAwAMAAP//AAA=" rel="icon" type="image/x-icon" />
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}"/>
         <link href="{% static 'photostock/product.css' %}" rel="stylesheet">
 
         <title>Photomatcher</title>
     </head>
 
     <body>
-        <nav class="site-header sticky-top py-2">
-            <div class="container d-flex flex-column flex-md-row justify-content-between">
-                <a class="py-2" href="{% url 'index' %}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
-                        stroke-linejoin="round" class="d-block mx-auto">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="14.31" y1="8" x2="20.05" y2="17.94"></line>
-                            <line x1="9.69" y1="8" x2="21.17" y2="8"></line>
-                            <line x1="7.38" y1="12" x2="13.12" y2="2.06"></line>
-                            <line x1="9.69" y1="16" x2="3.95" y2="6.06"></line>
-                            <line x1="14.31" y1="16" x2="2.83" y2="16"></line>
-                            <line x1="16.62" y1="12" x2="10.88" y2="21.94"></line>
-                    </svg>
-                </a>
-                <a class="py-2 d-none d-md-inline-block" href="{% url 'register' %}">Register</a>
-                <a class="py-2 d-none d-md-inline-block" href="{% url 'login' %}">Login</a>
-                <a class="py-2 d-none d-md-inline-block" href="#">Features</a>
-                
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a href="{% url 'index' %}">
+                <img style="width: 45px;" src="{% static 'photostock/camera.svg' %}" alt="Kiwi standing on oval">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+          
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
+                            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+                {% if user.username != '' %}
+                    <div id="user_id" data-user_id="{{user.id}}">Hello, {{user.username}}</div>
+                    <a class="nav-link" href="{% url 'logout' %}">Log out</a>
+                {%endif%}
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
             </div>
         </nav>
-        <div class="container">
+        <div class="container-xl">
+            
         {% block body %}
             
 

@@ -1,5 +1,8 @@
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.urls import reverse
 from rest_framework import viewsets
 
 #from .serializers import HumanSerializer
@@ -7,7 +10,7 @@ from .models import *
 
 def index(request):
     if not request.user.is_authenticated:
-        return render(request, "orders/login.html", {"message": None})
+        return render(request, "photostock/login.html", {"message": None})
     context = {        
         "user": request.user
     }
