@@ -20,7 +20,7 @@ class Profile(models.Model):
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(max_length=500, blank=True)
-    location = models.CharField(max_length=30, blank=True)
+    location = models.CharField(max_length=500, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=2, choices=LIST_OF_ALL_GENDERS, default='ns')
     # avatar = models.ImageField(upload_to=get_image_name)
@@ -37,10 +37,7 @@ class Profile(models.Model):
         return f'{self.user.username}: {self.user.first_name} {self.user.last_name}'
 
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def update_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
