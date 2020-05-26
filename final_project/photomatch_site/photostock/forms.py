@@ -19,7 +19,8 @@ class ProfileForm(forms.ModelForm):
         widgets = {
             'bio': forms.Textarea(attrs={'class': 'form-control'}),
             'location': forms.TextInput(attrs={'class': 'form-control'}),
-            'birth_date': forms.DateInput()
+            'birth_date': forms.DateInput(attrs={'class': 'form-control'}), 
+            'gender': forms.ChoiceField()
         }
         widgets.update({
             k: forms.TextInput(attrs={'class': 'form-control'}) for k in fields[1:]

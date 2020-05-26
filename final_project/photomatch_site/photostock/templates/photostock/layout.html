@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">        
         <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}"/>
         <link href="{% static 'photostock/product.css' %}" rel="stylesheet">
-
+        
         <title>Photomatcher</title>
     </head>
 
@@ -29,7 +29,7 @@
                         <a class="nav-link" href="{% url 'index' %}">Photomatcher<span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
+                        <a class="nav-link" href="{% url 'profile' %}">Profile Edit</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
@@ -57,6 +57,19 @@
                 </form>
             </div>
         </nav>
+        <div class="container-xl">
+            {% if messages %}
+                {% for message in messages %}
+                        <div id='message_alert' class="alert alert-{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}danger{% else %}primary{% endif %} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
         <div class="container-xl">
             
         {% block body %}
@@ -97,12 +110,11 @@
             </div>
         </div>
         </footer>
-                
+
+        <script src="{% static 'photostock/layout.js' %}"></script>        
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-        <script>
-            document.querySelector("#year").innerHTML = new Date().getFullYear();
-        </script>
+        
     </body>
 </html>
