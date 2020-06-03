@@ -35,8 +35,7 @@ def login_view(request):
 
 
 def logout_view(request):
-    logout(request)
-    #messages.error(request, 'Logged out.')
+    logout(request)    
     return render(request, "photostock/login.html", {"messages": ("Logged out.",)})
 
 def register_view(request):
@@ -50,39 +49,22 @@ def register_view(request):
         })
     else:
         # POST
-
-        # TODO registration form processing
-        user_form = NewUserForm(request.POST) if is_new else UserForm(request.POST, instance=request.user)
-        profile_form = ProfileForm(request.POST, instance=request.user.profile)
-        if user_form.is_valid() and profile_form.is_valid():        
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Profile saved.')
-            return HttpResponseRedirect(reverse("index"))            
+        user_form = NewUserForm(request.POST) if is_new \
+            else UserForm(request.POST, instance=request.user)
+        if user_form.is_valid():
+            u = user_form.save()
+            if is_new:
+                login(request, u)
+            else:
+                u = request.user
+            profile_form = ProfileForm(request.POST, instance=u.profile)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Profile saved.')
+                return HttpResponseRedirect(reverse("index"))
         else:
             messages.error(request, (user_form.errors, profile_form.errors))
             return HttpResponseRedirect(reverse("register"))
             
         return HttpResponseRedirect(reverse("index"))
-        # if is_new:
-        #     username = request.POST["username"]
-        #     password = request.POST["password"]
-        #     first_name = request.POST["first_name"]
-        #     last_name = request.POST["last_name"]
-        #     email = request.POST["email"]
-        #     user = User.objects.create_user(username, email, password)
-        #     user.first_name = first_name
-        #     user.last_name = last_name
-        #     user.save()
-        # else:
-        #     user = request.user
         
-        # profile_form = ProfileForm(request.POST, instance=user.profile)
-        # if user_form.is_valid() and profile_form.is_valid():
-        #     user_form.save()
-        #     profile_form.save()
-        #     messages.success(request, 'Profile saved.')
-        #     return HttpResponseRedirect(reverse("index"))
-        # else:
-        #     messages.error(request, 'There were some errors in profile data.')
-        #     return HttpResponseRedirect(reverse("register"))

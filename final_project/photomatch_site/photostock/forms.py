@@ -1,5 +1,6 @@
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import password_validation
 from django import forms
 
 class UserForm(forms.ModelForm):
@@ -10,34 +11,32 @@ class UserForm(forms.ModelForm):
             k: forms.TextInput(attrs={'class': 'form-control'}) for k in fields
         }    
 
-class NewUserForm(UserCreationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+class NewUserForm(UserCreationForm):    
     password1 = forms.CharField(
         label="Password",
         strip=False,
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'class': 'form-control'}),
-        help_text='dfgdfg',
+        widget=forms.PasswordInput(attrs={
+            'autocomplete': 'new-password', 
+            'class': 'form-control'
+        }),
+        help_text=password_validation.password_validators_help_text_html(),
     )
     password2 = forms.CharField(
-        label="Password",
+        label="Password confirmation",
         strip=False,
         widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'class': 'form-control'}),
-        help_text='dfgdfg2222',
+        help_text="Enter the same password as before, for verification.",
     )
-    first_name = forms.CharField(max_length=30, required=False, help_text='Optional.', 
-                                widget=forms.TextInput(attrs={'class': 'form-control'}))
-    last_name = forms.CharField(max_length=30, required=False, help_text='Optional.', 
-                                widget=forms.TextInput(attrs={'class': 'form-control'}))
-    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.', 
-                                widget=forms.TextInput(attrs={'class': 'form-control'}))
-    
-    
+
     class Meta:
         model = User
         fields = ('username', 'password1', 'password2', 'first_name', 'last_name', 'email', )
+        widgets = {
+            k: forms.TextInput(attrs={'class': 'form-control'}) for k in fields
+        }
     
     def save(self, commit=True):
-            user = super(UserCreationForm, self).save(commit=False)
+            user = super(NewUserForm, self).save(commit=False)
             user.email = self.cleaned_data['email']
             user.first_name = self.cleaned_data['first_name']
             user.last_name = self.cleaned_data['last_name']
